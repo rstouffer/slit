@@ -1,0 +1,66 @@
+#!/usr/bin/python
+### Ryan Stouffer
+### a way to cut correctly with csv
+### Notes
+
+import os
+import datetime
+import sys
+import base64
+import hashlib
+from optparse import OptionParser
+import csv
+import sys
+
+verbose=False
+subject=""
+version='0'
+
+usage = "usage: %prog [options]"
+parser = OptionParser(usage=usage, version="%prog " + version, description="A simple commandline to cut csv data into parts.  If stdin is detected that will be attached as a file.  On first run a config file is generated and if not found it tries to create it and quit.")
+
+parser.add_option("-f", "--fields", dest="fields", help="a comma separated list of delimeters")
+parser.add_option("-d", "--delim", dest="delim", help="the delimeter that separates column")
+parser.add_option("-o", "--out", dest="out", help="the delimeter to use for output")
+parser.add_option("-q", "--quote", dest="quote", help="the value that separates column")
+(options, args) = parser.parse_args()
+
+fieldArr=[]
+delim=','
+quote='"'
+out=delim
+
+if options.delim:
+	delim=options.delim
+
+if options.out:
+	out=options.out
+
+if options.fields:
+	for val in options.fields.split(','):
+		fieldArr.append(int(val))
+	
+if options.quote:
+	quote=options.quote
+	
+streams=[]
+
+if not sys.stdin.isatty():
+	streams.append(sys.stdin)
+
+for arg in args:
+	streams.append(open(arg))
+
+for stream in streams:
+	reader = csv.reader(stream, delimiter=delim, quotechar=quote)
+	for row in reader:
+		first=True
+		for idx, col in enumerate(row):
+			if idx+1 in fieldArr:
+				if first==True:
+					first=False
+				else:
+					sys.stdout.write(out)
+					sys.stdout.write(' ')
+				sys.stdout.write(col)
+		print ''
