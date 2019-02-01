@@ -19,7 +19,7 @@ version='0'
 usage = "usage: %prog [options]"
 parser = OptionParser(usage=usage, version="%prog " + version, description="A simple commandline to cut csv data into parts.")
 
-parser.add_option("-f", "--fields", dest="fields", help="a comma separated list of delimeters")
+parser.add_option("-f", "--fields", dest="fields", help="a comma separated list of delimeters, to keep with cut integer count starts at 1")
 parser.add_option("-d", "--delim", dest="delim", help="the delimeter that separates column")
 parser.add_option("-o", "--out", dest="out", help="the delimeter to use for output")
 parser.add_option("-q", "--quote", dest="quote", help="the value that separates column")
@@ -30,31 +30,39 @@ delim=','
 quote='"'
 out=delim
 
+#set delim in
 if options.delim:
 	delim=options.delim
-
+# set delim out
 if options.out:
 	out=options.out
 
+#get the feilds and store the count, will error if you send antyhing other than a number and commas, yes negatives are accepted inputs
 if options.fields:
 	for val in options.fields.split(','):
 		fieldArr.append(int(val))
 	
+# delimeter for quote
 if options.quote:
 	quote=options.quote
 	
 streams=[]
 
+#check if stdin and add to streams list
 if not sys.stdin.isatty():
 	streams.append(sys.stdin)
 
+#add filenames as streams
 for arg in args:
 	streams.append(open(arg))
 
+#iterate streams
 for stream in streams:
 	reader = csv.reader(stream, delimiter=delim, quotechar=quote)
+	#yes it will parse the header too
 	for row in reader:
 		first=True
+		#iterate through all columns find rownum (starting at 1)
 		for idx, col in enumerate(row):
 			if idx+1 in fieldArr:
 				if first==True:
