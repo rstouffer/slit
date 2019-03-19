@@ -1,5 +1,5 @@
 # slit
-A little better cut.  The unix command cut doesn't effectivly use delimeters for data delimination, to combat this I wrote slit.  
+NOT a clone of cut.  The unix command cut doesn't effectivly use delimeters for data delimination, to combat this I wrote slit.  
 
 Uses stdin or filenames as commandline arguments options are below
 
