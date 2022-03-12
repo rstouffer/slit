@@ -71,4 +71,4 @@ for stream in streams:
 					sys.stdout.write(out)
 					sys.stdout.write(' ')
 				sys.stdout.write(col)
-		print ''
+		print ' '
